@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\File;
+use App\Models\Tag;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class FileTagSeeder extends Seeder
 {
     use WithoutModelEvents;
 
@@ -14,10 +16,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            FileSeeder::class,
-            TagSeeder::class,
-            FileTagSeeder::class,
-        ]);
+        $files = File::all();
+        $tags = Tag::all();
+
+        foreach ($files as $file) {
+            $file->tags()->attach($tags->random(rand(1, 3))->pluck("id"));
+        }
     }
 }
