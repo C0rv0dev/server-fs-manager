@@ -30,4 +30,14 @@ class Tag extends Model
     {
         return $this->morphToMany(File::class, "taggable");
     }
+
+    /**
+     * Get all folders related to this tag.
+     *
+     * @return MorphToMany
+     */
+    public function folders(): MorphToMany
+    {
+        return $this->morphToMany(Folder::class, "taggable");
+    }
 }

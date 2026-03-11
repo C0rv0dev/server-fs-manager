@@ -15,6 +15,9 @@ return new class extends Migration {
             $table->foreignId("tag_id")->constrained();
             $table->foreignId("taggable_id");
             $table->string("taggable_type");
+
+            $table->index(["taggable_id", "taggable_type"]);
+
             $table->timestamps();
         });
     }

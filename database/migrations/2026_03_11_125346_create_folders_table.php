@@ -10,15 +10,19 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create("files", function (Blueprint $table) {
+        Schema::create("folders", function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->string("path");
-            $table->unsignedBigInteger("size")->nullable();
-            $table->string("mime")->nullable();
-            $table->string("extension")->nullable();
-            // relation
-            $table->foreignId("user_id")->constrained()->onDelete("cascade");
+            $table->string("path")->index();
+
+            $table
+                ->foreignId("parent_id")
+                ->nullable()
+                ->constrained("folders")
+                ->cascadeOnDelete();
+
+            $table->foreignId("user_id")->constrained()->cascadeOnDelete();
+
             $table->timestamps();
         });
     }
@@ -28,6 +32,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists("files");
+        Schema::dropIfExists("folders");
     }
 };
