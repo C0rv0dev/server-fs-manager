@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class File extends Model
@@ -61,6 +62,16 @@ class File extends Model
     public function tags(): MorphToMany
     {
         return $this->morphToMany(Tag::class, "taggable");
+    }
+
+    /**
+     * Return a list of favorite files.
+     *
+     * @return MorphMany
+     */
+    public function favorites(): MorphMany
+    {
+        return $this->morphMany(Star::class, "starrable");
     }
 
     // ==================================== ACCESSORS ====================================

@@ -22,6 +22,7 @@ class FileFactory extends Factory
 
         return [
             "name" => $this->faker->word(),
+            "hash" => $this->faker->sha256(),
             "size" => $this->faker->randomNumber(),
             "mime" => $this->faker->mimeType(),
             "extension" => $ext[rand(0, count($ext) - 1)],

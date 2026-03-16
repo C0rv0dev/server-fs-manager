@@ -24,7 +24,7 @@ class FolderSeeder extends Seeder
                 "_" .
                 strtolower(str_replace(" ", "_", $user->name));
 
-            Folder::factory(5)->create([
+            Folder::factory(15)->create([
                 "user_id" => $user->id,
                 "path" => "/files/users/{$folderName}",
             ]);

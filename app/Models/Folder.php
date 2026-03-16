@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Folder extends Model
 {
     /** @use HasFactory<\Database\Factories\FolderFactory> */
     use HasFactory;
 
-    protected $fillable = ["name", "path", "parent_id", "user_id"];
+    protected $fillable = ["name", "path", "hash", "parent_id", "user_id"];
 
     /**
      * Get the parent folder of this folder.
@@ -42,6 +44,26 @@ class Folder extends Model
     public function files(): HasMany
     {
         return $this->hasMany(File::class);
+    }
+
+    /**
+     * Return a list of favorite folders.
+     *
+     * @return MorphMany
+     */
+    public function favorites(): MorphMany
+    {
+        return $this->morphMany(Star::class, "starrable");
+    }
+
+    /**
+     * Get the tags associated with this folder.
+     *
+     * @return MorphToMany
+     */
+    public function tags(): MorphToMany
+    {
+        return $this->morphToMany(Tag::class, "taggable");
     }
 
     /**

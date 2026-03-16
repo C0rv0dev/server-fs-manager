@@ -1,26 +1,20 @@
-{{-- resources/views/components/file-item.blade.php --}}
-@props(['file'])
+{{-- resources/views/components/folder-item.blade.php --}}
+@props(['folder'])
 
 <li class="list-group-item d-flex justify-content-between align-items-center">
     <div class="d-flex align-items-center gap-2">
         <span class="me-2">
-            <i class="fa-solid fa-file"></i>
+            <i class="fa-solid fa-folder"></i>
         </span>
 
         <div class="file-main">
             <div class="file-name fw-semibold">
-                {{ isset($file->name) ? e($file->named) : 'Unnamed' }}
+                {{ $folder->name }}
             </div>
 
-            @if(!empty($file->size))
-                <div class="file-meta small text-muted">
-                    {{ $file->formatted_size }}
-                </div>
-            @endif
-
-            @if(!empty($file->tags))
+            @if(!empty($folder->tags))
                 {{-- tag capsules --}}
-                @foreach ($file->tags as $tag)
+                @foreach ($folder->tags as $tag)
                     <span class="badge badge-pill badge-secondary" style="background-color: gray;">
                         {{ $tag->name }}
                     </span>
@@ -30,11 +24,9 @@
     </div>
 
     <div class="file-actions">
-        @if(!empty($file->path))
-            <a href="{{ url($file->path) }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1" title="Open">
-                Open
-            </a>
-        @endif
+        <a href="{{ route('folders.show', $folder->hash) }}" class="btn btn-sm btn-outline-primary me-1" title="Open">
+            Open
+        </a>
 
         <button type="button" class="btn btn-sm btn-outline-secondary" title="More">
             ⋯
