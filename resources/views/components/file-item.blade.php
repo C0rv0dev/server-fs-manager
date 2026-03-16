@@ -21,7 +21,7 @@
             @if(!empty($file->tags))
                 {{-- tag capsules --}}
                 @foreach ($file->tags as $tag)
-                    <span class="badge badge-pill badge-secondary" style="background-color: gray;">
+                    <span class="badge badge-pill bg-secondary">
                         {{ $tag->name }}
                     </span>
                 @endforeach

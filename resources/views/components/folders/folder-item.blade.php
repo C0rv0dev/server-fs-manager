@@ -15,7 +15,7 @@
             @if(!empty($folder->tags))
                 {{-- tag capsules --}}
                 @foreach ($folder->tags as $tag)
-                    <span class="badge badge-pill badge-secondary" style="background-color: gray;">
+                    <span class="badge badge-pill bg-secondary"">
                         {{ $tag->name }}
                     </span>
                 @endforeach

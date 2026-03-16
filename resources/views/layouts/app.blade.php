@@ -18,129 +18,148 @@
 
     <style>
         .app-sidebar {
-            position: fixed;
-            top: 56px;
-            left: 0;
-            bottom: 0;
             width: 250px;
             overflow-y: auto;
             z-index: 1000;
             padding-right: 0;
             padding-left: 0;
             border-right: 1px solid #dee2e6;
+            background-color: #fff;
         }
 
-        .main-with-sidebar {
+        .app-sidebar.offcanvas {
+            width: 250px;
+        }
+
+        .main-content {
+            padding: 20px;
             margin-left: 250px;
-            margin-top: 3rem;
+        }
+
+        .mobile-sidebar-toggle {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .app-sidebar {
+                position: fixed;
+            }
+
+            .main-content {
+                margin-left: 250px;
+            }
+
+            .app-sidebar.offcanvas {
+                transform: none !important;
+                visibility: visible !important;
+                z-index: 1000;
+            }
         }
 
         @media (max-width: 767.98px) {
-            .app-sidebar {
-                position: static;
-                width: 100%;
-                top: auto;
-                bottom: auto;
-                height: auto;
+            .main-content {
+                margin-top: 60px;
+                margin-left: 0 !important;
             }
 
-            .main-with-sidebar {
-                margin-left: 0 !important;
+            .mobile-sidebar-toggle {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1000;
             }
         }
     </style>
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
-            <div class="container">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+        @auth
+            <div class="mobile-sidebar-toggle bg-white p-2 w-100 shadow-sm">
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
+            <button class="btn btn-outline-secondary d-md-none m-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="{{ __('Toggle sidebar') }}">
+                <i class="fa-solid fa-bars"></i>
+            </button>
             </div>
-        </nav>
+        @endauth
 
-        <div class="container py-4">
-            <div class="row">
-                @auth
-                    <aside class="col-md-3 app-sidebar">
-                        <div class="h-100 d-flex flex-column p-0">
-                            <div class="list-group list-group-flush">
-                                <a href="{{ route('home') }}" class="list-group-item list-group-item-action {{ request()->routeIs('home') ? 'active' : '' }}">
-                                    <i class="fa-solid fa-house"></i>
-                                    Home
-                                    <div class="small">Display 10 recent files</div>
-                                </a>
-                                <a href="{{ route('files.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('files.*') ? 'active' : '' }}">
-                                    <i class="fa-solid fa-file"></i>
-                                    Files
-                                    <div class="small">Display paginated files</div>
-                                </a>
-                                <a href="{{ route('archives.starred') }}" class="list-group-item list-group-item-action {{ request()->routeIs('archives.starred') ? 'active' : '' }}">
-                                    <i class="fa-solid fa-star"></i>
-                                    Starred
-                                    <div class="small">Favorite files</div>
-                                </a>
-                            </div>
+        <main>
 
-                            <!-- App version pinned to the bottom of the sidebar -->
-                            <div class="p-3 mt-auto small text-muted text-center">
+            @auth
+                <aside id="appSidebar" class="col-md-3 app-sidebar offcanvas offcanvas-start d-md-block" tabindex="-1" aria-labelledby="sidebarLabel" data-bs-scroll="true" data-bs-backdrop="false">
+                    <div class="offcanvas-header d-md-none">
+                        <h5 id="sidebarLabel" class="offcanvas-title">{{ config('app.name', 'Laravel') }}</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{{ __('Close') }}"></button>
+                    </div>
+
+                    <div class="offcanvas-body p-0 h-100 d-flex flex-column">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item">
+                                <div class="d-flex flex-column align-items-center justify-content-between">
+
+                                    {{-- avatar --}}
+                                    <div class="avatar me-2">
+                                        {{-- square placeholder --}}
+                                        <canvas width="40" height="40" class="rounded-circle">
+                                            <script>
+                                                const canvas = document.querySelector('canvas');
+                                                const ctx = canvas.getContext('2d');
+                                                ctx.fillStyle = 'gray';
+                                                ctx.fillRect(0, 0, 40, 40);
+                                            </script>
+                                        </canvas>
+                                    </div>
+
+                                    <div class="fw-bold">{{ Auth::user()->name }}</div>
+                                    <div class="small text-muted">{{ Auth::user()->email }}</div>
+                                </div>
+                            </a>
+
+                            <a href="{{ route('home') }}" class="list-group-item list-group-item-action {{ request()->routeIs('home') ? 'active' : '' }}">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-house me-2"></i>
+                                    <div class="d-inline-block">Home<div class="small">Display 10 recent files</div></div>
+                                </div>
+                            </a>
+                            <a href="{{ route('files.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('files.*') ? 'active' : '' }}">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-file me-2"></i>
+                                    <div class="d-inline-block">Files<div class="small">Display paginated files</div></div>
+                                </div>
+                            </a>
+                            <a href="{{ route('archives.starred') }}" class="list-group-item list-group-item-action {{ request()->routeIs('archives.starred') ? 'active' : '' }}">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-star me-2"></i>
+                                    <div class="d-inline-block">Starred<div class="small">Favorite files</div></div>
+                                </div>
+                            </a>
+                            <a href="{{ route('archives.starred') }}" class="list-group-item list-group-item-action {{ request()->routeIs('archives.starred') ? 'active' : '' }}">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-trash me-2"></i>
+                                    <div class="d-inline-block">Trash<div class="small">Deleted files</div></div>
+                                </div>
+                            </a>
+                        </div>
+
+                        {{-- Logout and version pinned to bottom --}}
+                        <div class="p-3 mt-auto">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger w-100">Logout</button>
+                            </form>
+
+                            <div class="small text-muted text-center mt-2">
                                 Version: {{ config('app.version', 'v1.0') }}
                             </div>
                         </div>
-                    </aside>
-                @endauth
-
-                <main class="@auth col-md-9 main-with-sidebar @else col-md-12 mt-5 @endauth">
-                    <div class="py-2">
-                        @yield('content')
                     </div>
-                </main>
+                </aside>
+            @endauth
+
+            <div class="@auth main-content @else d-flex justify-content-center align-items-center vh-100 @endauth">
+                @yield('content')
             </div>
-        </div>
+        </main>
     </div>
 </body>
 </html>

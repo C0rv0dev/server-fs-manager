@@ -13,9 +13,33 @@ class FileController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return View
+     */
+    public function index(Request $request): View
     {
-        return "view(files.index)";
+        $user = Auth::user();
+        $search = $request->input("search");
+
+        $files = $user
+            ->files()
+            ->when($search, function ($query) use ($search) {
+                $query->where("name", "like", "%{$search}%");
+            })
+            ->orderBy("created_at", "desc")
+            ->paginate(15, ["*"], "files_page");
+
+        $folders = $user
+            ->folders()
+            ->when($search, function ($query) use ($search) {
+                $query->where("name", "like", "%{$search}%");
+            })
+            ->orderBy("created_at", "desc")
+            ->paginate(10, ["*"], "folders_page");
+
+        return view("files.list", compact("files", "folders"));
     }
 
     /**
