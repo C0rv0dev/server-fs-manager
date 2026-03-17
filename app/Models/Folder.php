@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Folder extends Model
 {
     /** @use HasFactory<\Database\Factories\FolderFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = ["name", "path", "hash", "parent_id", "user_id"];
 
@@ -33,7 +34,7 @@ class Folder extends Model
      */
     public function children(): HasMany
     {
-        return $this->hasMany(Folder::class, "parent_id");
+        return $this->hasMany(Folder::class, "parent_id", "id");
     }
 
     /**

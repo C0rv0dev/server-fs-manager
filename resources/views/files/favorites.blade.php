@@ -10,7 +10,7 @@
             @foreach ($favoriteArchives as $archive)
                 {{-- check if archive is a file or folder --}}
                 @if ($archive->isFile())
-                    <x-file-item :file="$archive->starrable" />
+                    <x-files.file-item :file="$archive->starrable" />
                 @else
                     <x-folders.folder-item :folder="$archive->starrable" />
                 @endif

@@ -27,11 +27,16 @@ Route::group(["middleware" => Authenticate::class], function () {
         Route::get("/index", [
             App\Http\Controllers\FileController::class,
             "index",
-        ])->name("files.index");
+        ])->name("archives.index");
     });
 
     Route::get("/favorites", [
         App\Http\Controllers\FileController::class,
         "favorites",
     ])->name("archives.starred");
+
+    Route::get("/trashed", [
+        App\Http\Controllers\FileController::class,
+        "trashed",
+    ])->name("archives.trashed");
 });

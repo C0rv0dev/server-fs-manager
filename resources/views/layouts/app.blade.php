@@ -121,7 +121,7 @@
                                     <div class="d-inline-block">Home<div class="small">Display 10 recent files</div></div>
                                 </div>
                             </a>
-                            <a href="{{ route('files.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('files.*') ? 'active' : '' }}">
+                            <a href="{{ route('archives.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('archives.index') ? 'active' : '' }}">
                                 <div class="d-flex align-items-center">
                                     <i class="fa-solid fa-file me-2"></i>
                                     <div class="d-inline-block">Files<div class="small">Display paginated files</div></div>
@@ -133,7 +133,7 @@
                                     <div class="d-inline-block">Starred<div class="small">Favorite files</div></div>
                                 </div>
                             </a>
-                            <a href="{{ route('archives.starred') }}" class="list-group-item list-group-item-action {{ request()->routeIs('archives.starred') ? 'active' : '' }}">
+                            <a href="{{ route('archives.trashed') }}" class="list-group-item list-group-item-action {{ request()->routeIs('archives.trashed') ? 'active' : '' }}">
                                 <div class="d-flex align-items-center">
                                     <i class="fa-solid fa-trash me-2"></i>
                                     <div class="d-inline-block">Trash<div class="small">Deleted files</div></div>

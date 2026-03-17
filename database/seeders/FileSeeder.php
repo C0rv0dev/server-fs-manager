@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\File;
 use App\Models\Folder;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Testing\Fakes\Fake;
 
 class FileSeeder extends Seeder
 {
@@ -15,27 +15,54 @@ class FileSeeder extends Seeder
      */
     public function run(): void
     {
-        // for each folder, create a file
-        $folders = Folder::all();
+        $users = User::all();
 
-        // 40% of files per folder
-        foreach ($folders as $folder) {
-            $files = File::factory(3)->create([
-                "path" => $folder->path . "/" . $folder->name,
-                "user_id" => $folder->user->id,
-                "folder_id" => $folder->id,
-            ]);
+        // clear storage before seeding
+        Storage::deleteDirectory("/files");
 
-            foreach ($files as $file) {
-                // create user folder
-                Storage::makeDirectory("{$folder->path}/{$folder->name}");
+        foreach ($users as $user) {
+            $folders = $user->folders;
+            $userRootFolder =
+                $user->id .
+                "_" .
+                strtolower(str_replace(" ", "_", $user->name));
 
-                // create file
-                Storage::put(
-                    "{$file->path}/{$file->name}.{$file->extension}",
-                    "TEXT {$file->id}",
+            $userRootPath = "/files/users/" . $userRootFolder;
+
+            // create 3 files in root folder
+            $this->createFilesInFolder($userRootPath, $user->id);
+
+            // create 3 files in each folder
+            foreach ($folders as $folder) {
+                $this->createFilesInFolder(
+                    $folder->path . "/" . $folder->name,
+                    $folder->user->id,
+                    $folder->id,
                 );
             }
+        }
+    }
+
+    private function createFilesInFolder(
+        string $path,
+        int $user_id,
+        ?int $parent_folder_id = null,
+    ) {
+        $files = File::factory(3)->create([
+            "path" => $path,
+            "user_id" => $user_id,
+            "folder_id" => $parent_folder_id,
+        ]);
+
+        foreach ($files as $file) {
+            // create user folder
+            Storage::makeDirectory("{$path}");
+
+            // create file
+            Storage::put(
+                "{$file->path}/{$file->name}.{$file->extension}",
+                "TEXT {$file->id}",
+            );
         }
     }
 }

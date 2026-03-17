@@ -25,6 +25,7 @@ class FileController extends Controller
 
         $files = $user
             ->files()
+            ->where("folder_id", null)
             ->when($search, function ($query) use ($search) {
                 $query->where("name", "like", "%{$search}%");
             })
@@ -33,6 +34,7 @@ class FileController extends Controller
 
         $folders = $user
             ->folders()
+            ->where("parent_id", null)
             ->when($search, function ($query) use ($search) {
                 $query->where("name", "like", "%{$search}%");
             })
@@ -71,5 +73,29 @@ class FileController extends Controller
         }
 
         return view("files.favorites", compact("favoriteArchives"));
+    }
+
+    /**
+     * Get all trashed files.
+     *
+     * @return View
+     */
+    public function trashed(): View
+    {
+        $user = Auth::user();
+
+        $files = $user
+            ->files()
+            ->onlyTrashed()
+            ->orderBy("deleted_at", "desc")
+            ->paginate(15, ["*"], "trashed_files_page");
+
+        $folders = $user
+            ->folders()
+            ->onlyTrashed()
+            ->orderBy("deleted_at", "desc")
+            ->paginate(15, ["*"], "trashed_folders_page");
+
+        return view("files.trashed", compact("files", "folders"));
     }
 }

@@ -33,7 +33,6 @@ class HomeController extends Controller
         $userId = Auth::user()->id;
 
         $folders = Folder::where("user_id", $userId)
-            ->whereNull("parent_id")
             ->with("tags")
             ->orderBy("created_at", "asc")
             ->limit(10)

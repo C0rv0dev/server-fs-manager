@@ -45,7 +45,7 @@
                     @if($files->isNotEmpty())
                         <ul class="list-group">
                             @foreach($files as $file)
-                                <x-file-item :file="$file" />
+                                <x-files.file-item :file="$file" />
                             @endforeach
                         </ul>
                     @else
