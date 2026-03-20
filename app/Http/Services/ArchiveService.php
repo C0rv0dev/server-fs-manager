@@ -95,10 +95,6 @@ class ArchiveService
      */
     public function store(Request $request): RedirectResponse
     {
-        $user = Auth::user();
-
-        // Save files
-        // try
         $result = SaveFile::exec($request);
 
         return redirect()

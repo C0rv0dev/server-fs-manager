@@ -5,18 +5,27 @@
     {{-- search bar --}}
     <x-search-bar :route="'archives.starred'" :placeholder="'Search favorites...'" />
 
-    <div class="mb-3">
-        <ul class="list-group">
-            @foreach ($favoriteArchives as $archive)
-                {{-- check if archive is a file or folder --}}
-                @if ($archive->isFile())
-                    <x-files.file-item :file="$archive->starrable" />
+    <div class="card mb-4">
+        <div class="card-body">
+            <x-text.title
+                :title="'Favorites'"
+                :align="'start'"
+            />
+
+            <div class="mb-3">
+                @if($favoriteArchives->isNotEmpty())
+                    <ul class="list-group mx-0">
+                        @if ($archive->isFile())
+                            <x-files.file-item :file="$archive->starrable" />
+                        @else
+                            <x-folders.folder-item :folder="$archive->starrable" />
+                        @endif
+                    </ul>
                 @else
-                    <x-folders.folder-item :folder="$archive->starrable" />
+                    <p class="text-muted">No favorite files found.</p>
                 @endif
-            @endforeach
-        </ul>
-    </div>
+            </div>
+        </div>
 
     {{ $favoriteArchives->links() }}
 @endsection

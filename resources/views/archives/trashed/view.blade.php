@@ -3,7 +3,7 @@
 
 @section('content')
     {{-- search bar --}}
-    <x-search-bar :route="'archives.trashed'" :placeholder="'Search files...'" />
+    <x-search-bar :route="'archives.trashed'" :placeholder="'Search trashed...'" />
 
     <div class="card mb-4">
         <div class="card-body">
