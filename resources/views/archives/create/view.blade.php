@@ -65,9 +65,7 @@
                     {{-- Total Size --}}
                     <div class="text-muted mb-2">Total size: <span id="totalSize">0 Bytes</span></div>
 
-                    <div id="treePreview" class="border rounded p-3" style="min-height:120px; max-height:400px; overflow:auto;">
-                        <div class="text-muted">No files selected.</div>
-                    </div>
+                    <x-archives.tree-preview />
 
                     <div class="d-flex w-100 align-items-center justify-content-center mt-4 mb-2">
                         <button form="uploadForm" type="submit" class="btn btn-primary w-50">

@@ -1,80 +1,128 @@
 import { formatBytes } from "../../helpers.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-    const fileInput = document.getElementById("filesInput");
-    const folderInput = document.getElementById("foldersInput");
+document.addEventListener("alpine:init", () => {
+    Alpine.data("fileTree", () => ({
+        nodes: [],
+        files: [],
 
-    if (!fileInput || !folderInput) return;
+        init() {
+            const fileInput = document.getElementById("filesInput");
+            const folderInput = document.getElementById("foldersInput");
 
-    fileInput.addEventListener("change", handleInput);
-    folderInput.addEventListener("change", handleInput);
+            fileInput.addEventListener("change", () => this.load());
+            folderInput.addEventListener("change", () => this.load());
+        },
 
-    function handleInput(e) {
-        const allFiles = [...fileInput.files, ...folderInput.files];
+        load() {
+            const fileInput = document.getElementById("filesInput");
+            const folderInput = document.getElementById("foldersInput");
+            const totalSize = document.getElementById("totalSize");
 
-        let totalSize = 0;
-        let tree = {};
+            const allFiles = [...fileInput.files, ...folderInput.files];
 
-        for (let file of allFiles) {
-            totalSize += file.size;
+            this.files = allFiles;
+            this.nodes = this.buildTree(allFiles);
 
-            let pathParts = file.webkitRelativePath
-                ? file.webkitRelativePath.split("/")
-                : [file.name];
+            const total = allFiles.reduce((sum, f) => sum + f.size, 0);
+            totalSize.innerText = formatBytes(total);
 
-            let current = tree;
+            this.render();
+        },
 
-            pathParts.forEach((part, index) => {
-                if (index === pathParts.length - 1) {
-                    current[part] = { __file: true, size: file.size };
-                } else {
-                    if (!current[part]) current[part] = {};
-                    current = current[part];
+        buildTree(files) {
+            const map = {};
+
+            files.forEach((file) => {
+                const relPath = file.webkitRelativePath || file.name;
+                const parts = relPath.split("/");
+
+                let current = map;
+
+                parts.forEach((part, i) => {
+                    if (!current[part]) {
+                        current[part] = {
+                            name: part,
+                            __file: i === parts.length - 1,
+                            size: file.size,
+                            children: {},
+                        };
+                    }
+
+                    if (i < parts.length - 1) {
+                        current = current[part].children;
+                    }
+                });
+            });
+
+            const normalize = (obj) =>
+                Object.values(obj)
+                    .sort((a, b) => {
+                        if (a.__file !== b.__file) return a.__file ? 1 : -1;
+                        return a.name.localeCompare(b.name);
+                    })
+                    .map((n) => ({
+                        ...n,
+                        children: normalize(n.children || {}),
+                    }));
+
+            return normalize(map);
+        },
+
+        render() {
+            const root = this.$refs.treeRoot;
+            root.innerHTML = "";
+
+            const ul = document.createElement("ul");
+            root.appendChild(ul);
+
+            this.nodes.forEach((node) => {
+                ul.appendChild(this.createNode(node));
+            });
+        },
+
+        createNode(node) {
+            const li = document.createElement("li");
+            li.id = node.__file ? node.__file : node.name;
+
+            li.addEventListener("click", (e) => {
+                e.stopPropagation();
+
+                const childList = li.querySelector(":scope > ul");
+                if (childList) {
+                    childList.style.display =
+                        childList.style.display === "none" ? "block" : "none";
                 }
             });
-        }
 
-        document.getElementById("totalSize").innerText = formatBytes(totalSize);
-        document.getElementById("treePreview").innerHTML = buildTreeHtml(tree);
+            const wrapper = document.createElement("div");
+            wrapper.className = "tree-item";
 
-        // Folder collapse
-        document.querySelectorAll(".folder").forEach((folder) => {
-            folder.addEventListener("click", () => {
-                const content = folder.nextElementSibling;
-                if (content.style.display === "none") {
-                    content.style.display = "block";
-                } else {
-                    content.style.display = "none";
-                }
-            });
-        });
-    }
+            const name = document.createElement("span");
+            name.className = node.__file ? "file" : "folder";
+            name.innerText = node.name;
 
-    function buildTreeHtml(tree) {
-        let html = "<ul>";
+            wrapper.appendChild(name);
 
-        const keys = Object.keys(tree).sort((a, b) => {
-            const aIsFile = tree[a].__file;
-            const bIsFile = tree[b].__file;
-
-            if (aIsFile !== bIsFile) return aIsFile ? 1 : -1;
-            return a.localeCompare(b);
-        });
-
-        for (let key of keys) {
-            if (tree[key].__file) {
-                html += `<li class="file">${key}</li>`;
-            } else {
-                html += `
-                    <li>
-                        <span class="folder">${key}</span>
-                        ${buildTreeHtml(tree[key])}
-                    </li>
-                `;
+            if (node.__file) {
+                const size = document.createElement("span");
+                size.className = "muted";
+                size.innerText = ` (${formatBytes(node.size)})`;
+                wrapper.appendChild(size);
             }
-        }
 
-        html += "</ul>";
-        return html;
-    }
+            li.appendChild(wrapper);
+
+            if (!node.__file && node.children.length) {
+                const childList = document.createElement("ul");
+
+                node.children.forEach((child) => {
+                    childList.appendChild(this.createNode(child));
+                });
+
+                li.appendChild(childList);
+            }
+
+            return li;
+        },
+    }));
 });
