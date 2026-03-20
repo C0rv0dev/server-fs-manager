@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Folder;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Storage;
 
 class FolderSeeder extends Seeder
 {
@@ -33,7 +31,7 @@ class FolderSeeder extends Seeder
                 Folder::factory(2)->create([
                     "user_id" => $user->id,
                     "parent_id" => $folder->id,
-                    "path" => "{$folder->path}/{$folder->name}/",
+                    "path" => "{$folder->path}/{$folder->name}",
                 ]);
             }
         }

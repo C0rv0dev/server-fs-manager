@@ -2,7 +2,7 @@
 @props(['folder'])
 
 <div class="mb-2">
-    <a class="btn btn-sm btn-outline-secondary w-100" href="{{ route('folders.show', $folder->hash) }}">
+    <a class="btn btn-sm btn-outline-secondary w-100" href="{{ route('folders.show', $folder->hash) }}" style="min-height: 56px;">
         <span class="fw-bold">
             <span class="d-flex justify-content-between align-items-start flex-column">
                 <div class="d-flex justify-content-between align-items-center w-100">

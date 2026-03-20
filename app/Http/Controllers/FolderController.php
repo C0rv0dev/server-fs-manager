@@ -3,23 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Folder;
-use Database\Factories\FolderFactory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class FolderController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view("folders.index");
-    }
-
-    /**
      * Display the specified resource.
+     *
+     * @param Request $request
+     * @param string $hash
+     * @return View
      */
-    public function show(Request $request, string $hash)
+    public function show(Request $request, string $hash): View
     {
         $search = $request->input("search");
 
@@ -40,6 +37,17 @@ class FolderController extends Controller
             ->where("hash", $hash)
             ->firstOrFail();
 
-        return view("folders.show", compact("folder"));
+        return view("folders.show.view", compact("folder"));
+    }
+
+    /**
+     * Store folder and its contents.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        dd($request->all());
     }
 }

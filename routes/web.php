@@ -11,32 +11,53 @@ Route::get("/", function () {
 });
 
 Route::group(["middleware" => Authenticate::class], function () {
+    // Home
     Route::get("/home", [
         App\Http\Controllers\HomeController::class,
         "index",
     ])->name("home");
 
+    // Files
+    Route::prefix("files")->group(function () {
+        Route::post("/store", [
+            App\Http\Controllers\FileController::class,
+            "store",
+        ])->name("files.store");
+    });
+
+    // Folders
     Route::prefix("folders")->group(function () {
         Route::get("/{hash}", [
             App\Http\Controllers\FolderController::class,
             "show",
         ])->name("folders.show");
+
+        Route::post("/store", [
+            App\Http\Controllers\FolderController::class,
+            "store",
+        ])->name("folders.store");
     });
 
-    Route::prefix("files")->group(function () {
+    // Archives
+    Route::prefix("archives")->group(function () {
         Route::get("/index", [
-            App\Http\Controllers\FileController::class,
+            App\Http\Controllers\ArchivesController::class,
             "index",
         ])->name("archives.index");
+
+        Route::get("/create", [
+            App\Http\Controllers\ArchivesController::class,
+            "create",
+        ])->name("archives.create");
+
+        Route::get("/favorites", [
+            App\Http\Controllers\ArchivesController::class,
+            "favorites",
+        ])->name("archives.starred");
+
+        Route::get("/trashed", [
+            App\Http\Controllers\ArchivesController::class,
+            "trashed",
+        ])->name("archives.trashed");
     });
-
-    Route::get("/favorites", [
-        App\Http\Controllers\FileController::class,
-        "favorites",
-    ])->name("archives.starred");
-
-    Route::get("/trashed", [
-        App\Http\Controllers\FileController::class,
-        "trashed",
-    ])->name("archives.trashed");
 });

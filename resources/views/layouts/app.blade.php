@@ -84,7 +84,6 @@
         @endauth
 
         <main>
-
             @auth
                 <aside id="appSidebar" class="col-md-3 app-sidebar offcanvas offcanvas-start d-md-block" tabindex="-1" aria-labelledby="sidebarLabel" data-bs-scroll="true" data-bs-backdrop="false">
                     <div class="offcanvas-header d-md-none">
@@ -115,30 +114,45 @@
                                 </div>
                             </a>
 
-                            <a href="{{ route('home') }}" class="list-group-item list-group-item-action {{ request()->routeIs('home') ? 'active' : '' }}">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa-solid fa-house me-2"></i>
-                                    <div class="d-inline-block">Home<div class="small">Display 10 recent files</div></div>
-                                </div>
-                            </a>
-                            <a href="{{ route('archives.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('archives.index') ? 'active' : '' }}">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa-solid fa-file me-2"></i>
-                                    <div class="d-inline-block">Files<div class="small">Display paginated files</div></div>
-                                </div>
-                            </a>
-                            <a href="{{ route('archives.starred') }}" class="list-group-item list-group-item-action {{ request()->routeIs('archives.starred') ? 'active' : '' }}">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa-solid fa-star me-2"></i>
-                                    <div class="d-inline-block">Starred<div class="small">Favorite files</div></div>
-                                </div>
-                            </a>
-                            <a href="{{ route('archives.trashed') }}" class="list-group-item list-group-item-action {{ request()->routeIs('archives.trashed') ? 'active' : '' }}">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa-solid fa-trash me-2"></i>
-                                    <div class="d-inline-block">Trash<div class="small">Deleted files</div></div>
-                                </div>
-                            </a>
+                            <x-layouts.sidebar-item
+                                :route="'home'"
+                                :label="'Home'"
+                                :small="'Display recent archives'"
+                                :icon="'fa-solid fa-home'"
+                                :active="request()->routeIs('home')"
+                            />
+
+                            <x-layouts.sidebar-item
+                                :route="'archives.create'"
+                                :label="'Create'"
+                                :small="'Upload archives'"
+                                :icon="'fa-solid fa-plus'"
+                                :active="request()->routeIs('archives.create')"
+                            />
+
+                            <x-layouts.sidebar-item
+                                :route="'archives.index'"
+                                :label="'Files'"
+                                :small="'Display paginated files'"
+                                :icon="'fa-solid fa-file'"
+                                :active="request()->routeIs('archives.index')"
+                            />
+
+                            <x-layouts.sidebar-item
+                                :route="'archives.starred'"
+                                :label="'Starred'"
+                                :small="'Favorite archives'"
+                                :icon="'fa-solid fa-star'"
+                                :active="request()->routeIs('archives.starred')"
+                            />
+
+                            <x-layouts.sidebar-item
+                                :route="'archives.trashed'"
+                                :label="'Trash'"
+                                :small="'Deleted archives'"
+                                :icon="'fa-solid fa-trash'"
+                                :active="request()->routeIs('archives.trashed')"
+                            />
                         </div>
 
                         {{-- Logout and version pinned to bottom --}}
@@ -157,6 +171,12 @@
             @endauth
 
             <div class="@auth main-content @else d-flex justify-content-center align-items-center vh-100 @endauth">
+                @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
                 @yield('content')
             </div>
         </main>

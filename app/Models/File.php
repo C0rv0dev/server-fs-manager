@@ -17,6 +17,7 @@ class File extends Model
     protected $fillable = [
         "name",
         "path",
+        "hash",
         "size",
         "mime",
         "extension",
@@ -32,6 +33,19 @@ class File extends Model
     ];
 
     protected $hidden = ["created_at", "updated_at"];
+
+    // ====================================== BOOT ======================================
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            if (empty($model->hash)) {
+                $name = (string) ($model->name ?? "");
+                $model->hash = hash("sha256", $name);
+            }
+        });
+    }
 
     // ================================== RELATIONSHIPS ==================================
 

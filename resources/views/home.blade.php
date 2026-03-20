@@ -5,12 +5,6 @@
     <div class="d-flex flex-column">
         <div class="card mb-4">
             <div class="card-body">
-                @if (session('status'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('status') }}
-                    </div>
-                @endif
-
                 <div class="mb-4">
                     <x-text.title
                         :title="'Recent Folders'"
@@ -35,23 +29,21 @@
 
         <div class="card">
             <div class="card-body">
-                <div class="mb-4">
-                    <x-text.title
-                        :title="'Recent Files'"
-                        :align="'start'"
-                        :caption="'Last 15 files added'"
-                    />
+                <x-text.title
+                    :title="'Recent Files'"
+                    :align="'start'"
+                    :caption="'Last 15 files added'"
+                />
 
-                    @if($files->isNotEmpty())
-                        <ul class="list-group">
-                            @foreach($files as $file)
-                                <x-files.file-item :file="$file" />
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text-muted">No root files found.</p>
-                    @endif
-                </div>
+                @if($files->isNotEmpty())
+                    <ul class="list-group">
+                        @foreach($files as $file)
+                            <x-files.file-item :file="$file" />
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="text-muted">No root files found.</p>
+                @endif
             </div>
         </div>
     </div>
