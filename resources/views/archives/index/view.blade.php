@@ -5,6 +5,17 @@
     {{-- search bar --}}
     <x-search-bar :route="'archives.index'" :placeholder="'Search files...'" />
 
+    @if(session('upload_result.errors'))
+        <div class="alert alert-danger">
+            <strong>Some files failed:</strong>
+            <ul>
+                @foreach(session('upload_result.errors') as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="card mb-4">
         <div class="card-body">
             <x-text.title

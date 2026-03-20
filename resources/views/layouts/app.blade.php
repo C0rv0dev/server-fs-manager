@@ -124,7 +124,7 @@
 
                             <x-layouts.sidebar-item
                                 :route="'archives.create'"
-                                :label="'Create'"
+                                :label="'Upload'"
                                 :small="'Upload archives'"
                                 :icon="'fa-solid fa-plus'"
                                 :active="request()->routeIs('archives.create')"

@@ -17,6 +17,29 @@ class Folder extends Model
 
     protected $fillable = ["name", "path", "hash", "parent_id", "user_id"];
 
+    protected $guarded = ["id"];
+
+    protected $casts = [
+        "hash" => "string",
+    ];
+
+    protected $hidden = ["created_at", "updated_at"];
+
+    // ====================================== BOOT ======================================
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            if (empty($model->hash)) {
+                $name = (string) ($model->name ?? "");
+                $model->hash = hash("sha256", $name);
+            }
+        });
+    }
+
+    // ================================== RELATIONSHIPS ==================================
+
     /**
      * Get the parent folder of this folder.
      *

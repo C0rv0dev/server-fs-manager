@@ -22,15 +22,9 @@ class FileSeeder extends Seeder
 
         foreach ($users as $user) {
             $folders = $user->folders;
-            $userRootFolder =
-                $user->id .
-                "_" .
-                strtolower(str_replace(" ", "_", $user->name));
-
-            $userRootPath = "/files/users/" . $userRootFolder;
 
             // create 3 files in root folder
-            $this->createFilesInFolder($userRootPath, $user->id);
+            $this->createFilesInFolder($user->root_folder, $user->id);
 
             // create 3 files in each folder
             foreach ($folders as $folder) {

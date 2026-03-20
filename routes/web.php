@@ -17,25 +17,12 @@ Route::group(["middleware" => Authenticate::class], function () {
         "index",
     ])->name("home");
 
-    // Files
-    Route::prefix("files")->group(function () {
-        Route::post("/store", [
-            App\Http\Controllers\FileController::class,
-            "store",
-        ])->name("files.store");
-    });
-
     // Folders
     Route::prefix("folders")->group(function () {
         Route::get("/{hash}", [
             App\Http\Controllers\FolderController::class,
             "show",
         ])->name("folders.show");
-
-        Route::post("/store", [
-            App\Http\Controllers\FolderController::class,
-            "store",
-        ])->name("folders.store");
     });
 
     // Archives
@@ -59,5 +46,10 @@ Route::group(["middleware" => Authenticate::class], function () {
             App\Http\Controllers\ArchivesController::class,
             "trashed",
         ])->name("archives.trashed");
+
+        Route::post("/store", [
+            App\Http\Controllers\ArchivesController::class,
+            "store",
+        ])->name("archives.store");
     });
 });

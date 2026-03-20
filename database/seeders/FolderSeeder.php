@@ -16,14 +16,9 @@ class FolderSeeder extends Seeder
         $users = User::all();
 
         foreach ($users as $user) {
-            $userRootFolder =
-                $user->id .
-                "_" .
-                strtolower(str_replace(" ", "_", $user->name));
-
             $folders = Folder::factory(3)->create([
                 "user_id" => $user->id,
-                "path" => "/files/users/{$userRootFolder}",
+                "path" => $user->root_folder,
             ]);
 
             // for each folder, create a subfolder

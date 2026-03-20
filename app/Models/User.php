@@ -71,4 +71,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Star::class);
     }
+
+    // ==================================== ACCESSORS ====================================
+
+    public function getRootFolderAttribute()
+    {
+        return "/files/users/" .
+            $this->id .
+            "_" .
+            strtolower(str_replace(" ", "_", $this->name));
+    }
 }
